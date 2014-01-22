@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 from astropy import constants
 import astropy.units as u
 
+from astro530.set1.function_definitions import planck_function
+
 wavelength_array = np.array([0.36, 0.44, 
                              0.55, 0.64, 
                              0.79, 1.25, 
@@ -42,7 +44,13 @@ dereddened_flux_array = np.array(
 
 observed_flux_array = dereddened_flux_array / 10**(reddening_array / 2.5)
 
+fine_wavelength_array = np.logspace(-1, 0.5, 50) * u.um
+fine_frequency_array = (constants.c / fine_wavelength_array).to('Hz')
+
+
 def plot_SED():
+
+    fig = plt.figure()
 
     plt.plot(wavelength_array, frequency_array*dereddened_flux_array,
              'bo--')
@@ -64,3 +72,33 @@ def plot_SED():
     plt.text(1, 6.5e-13, "Observed flux", color='r')
 
     plt.title("SED of V826 Tau")
+
+    return fig
+
+def plot_blackbody_plus_SED():
+
+    T_eff = 4060
+
+    fig = plt.figure()
+
+    blackbody_flux_array = (planck_function(T_eff, fine_frequency_array) * 
+                            max(frequency_array * dereddened_flux_array)/3.5e6)
+
+    plt.plot(fine_wavelength_array, fine_frequency_array*blackbody_flux_array,
+             'g')
+
+    plt.plot(wavelength_array, frequency_array*dereddened_flux_array,
+             'bo--')
+    plt.plot(wavelength_array, frequency_array*observed_flux_array, 
+             'ro:')
+
+    plt.loglog()
+    plt.xlim(0.35, 2.3)
+    plt.ylim(1e-14, 2e-12)
+
+    plt.xlabel(r"Wavelength ($\mu m$)")
+    plt.ylabel(r"$\nu F_{\nu}$ (W m$^{-2}$)")
+
+    plt.text(0.39, 7e-13, "4060 K blackbody", color='g')
+
+    return fig
