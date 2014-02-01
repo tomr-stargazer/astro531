@@ -18,11 +18,12 @@ cowley_table.rename_column('col3', 'atomic_number')
 cowley_table.rename_column('col4', 'atomic_weight')
 cowley_table.rename_column('col5', 'log_abundance')
 
-def de_logiffy(dex_abundance):
+def un_dexed_abundance(dex_abundance):
+    """ Gets the fractional abundance of an element from its dex. """
     return 10**(dex_abundance - 12)
 
 total_mass = np.sum(
-    de_logiffy(cowley_table['log_abundance'])*cowley_table['atomic_weight'])
+    un_dexed_abundance(cowley_table['log_abundance'])*cowley_table['atomic_weight'])
 
 print total_mass
 
@@ -30,10 +31,10 @@ print total_mass
 # Y: mass fraction of He.
 # Z: mass fraction of "metals"
 
-X = (de_logiffy(cowley_table['log_abundance'][0]) * 
+X = (un_dexed_abundance(cowley_table['log_abundance'][0]) * 
      cowley_table['atomic_weight'][0]) / total_mass
 
-Y = (de_logiffy(cowley_table['log_abundance'][1]) *
+Y = (un_dexed_abundance(cowley_table['log_abundance'][1]) *
      cowley_table['atomic_weight'][1]) / total_mass
 
 Z = 1 - X - Y
