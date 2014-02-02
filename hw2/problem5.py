@@ -31,14 +31,47 @@ print total_mass
 # Y: mass fraction of He.
 # Z: mass fraction of "metals"
 
-X = (un_dexed_abundance(cowley_table['log_abundance'][0]) * 
-     cowley_table['atomic_weight'][0]) / total_mass
+def problem_5a():
 
-Y = (un_dexed_abundance(cowley_table['log_abundance'][1]) *
-     cowley_table['atomic_weight'][1]) / total_mass
+    X = (un_dexed_abundance(cowley_table['log_abundance'][0]) * 
+         cowley_table['atomic_weight'][0]) / total_mass
 
-Z = 1 - X - Y
+    Y = (un_dexed_abundance(cowley_table['log_abundance'][1]) *
+         cowley_table['atomic_weight'][1]) / total_mass
 
-print "X: " + str(X)
-print "Y: " + str(Y)
-print "Z: " + str(Z)
+    Z = 1 - X - Y
+
+    print "X: " + str(X)
+    print "Y: " + str(Y)
+    print "Z: " + str(Z)
+
+    return {'X':X, 'Y':Y, 'Z':Z}
+
+def calculate_abundance_relative_to_H(table, symbol):
+
+    # What row of the table has this symbol's data?
+    index, = np.where(table['symbol'] == symbol)[0]
+
+    number_abundance = un_dexed_abundance(table['log_abundance'][index])
+    mass_abundance = (number_abundance * table['atomic_weight'][index] /
+                      table['atomic_weight'][0])
+
+    return number_abundance, mass_abundance
+
+assert calculate_abundance_relative_to_H(cowley_table, 'H') == (1., 1.)
+
+def problem_5b():
+
+    symbol_list_ii = ['C', 'N', 'O', 'Ne']
+    symbol_list_iii = ['Cr', 'Mn', 'Fe', 'Co', 'Ni']
+
+    print "element : number abundance : mass abundance"
+
+    for symbol_list in [['He'], symbol_list_ii, symbol_list_iii]:
+        for symbol in symbol_list:
+
+            number_abundance, mass_abundance = \
+              calculate_abundance_relative_to_H(cowley_table, symbol)
+            print symbol," : ", number_abundance, " : ", mass_abundance
+
+            
