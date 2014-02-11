@@ -25,7 +25,7 @@ def problem_2b():
 
     alpha_list = [10, 0, -4, -30, -100]
 
-    x_array = np.linspace(0, 150, 50)
+    x_array = np.linspace(0, 120, 150)
 
     fig = plt.figure()
     
@@ -33,14 +33,17 @@ def problem_2b():
 
         y_array = occupation_index(alpha, x_array)
 
-        plt.plot(x_array, y_array)
+        plt.plot(x_array, y_array, label=r"$\alpha$="+str(alpha))
 
     plt.show()        
 
-    plt.semilogy()
+    #    plt.semilogy()
     
     plt.xlabel(r"$E/kT$")
     plt.ylabel(r"$P(p)$")
+
+    leg = plt.legend()
+    leg.get_frame().set_alpha(0.5)
 
     return fig
 
