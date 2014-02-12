@@ -100,7 +100,7 @@ def problem_2c():
     fig = plt.figure()
 
     alpha_array = fermidirac_table['alpha']
-    T_array = np.array([1e7, 1e8, 1e9]) * u.K
+    T_array = np.array([1e9, 1e8, 1e7]) * u.K
 
     for T in T_array:
 
@@ -108,7 +108,17 @@ def problem_2c():
         
         P_e_array = electron_pressure(alpha_array, T)
 
-        plt.plot(n_e_array, P_e_array)
+        plt.plot(n_e_array, P_e_array, label=r"T = 10$^%s$" % 
+                 str(int(np.log10(T.value)))+" K")
+
+    plt.xlabel(r"$n_e$ (cm$^{-2}$)")
+    plt.ylabel(r"$P_e$ (dyn cm$^{-2}$)")
+
+    plt.loglog()
+
+    plt.legend(loc='upper left')
+
+    return fig
 
         
     
