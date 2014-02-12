@@ -52,6 +52,8 @@ def problem_2b():
     plt.xlabel(r"$E/kT$")
     plt.ylabel(r"$P(p)$")
 
+    plt.title("Tom Rice. Problem 2b.")
+
     leg = plt.legend()
     leg.get_frame().set_alpha(0.5)
 
@@ -83,6 +85,12 @@ def electron_pressure(alpha, temperature):
     P_e = n_e * c.k_B * T * (twothirds_F_32_alpha / F_12_alpha)
 
     return P_e.to('dyn / cm2')
+
+# def non_degenerate_pressure(temperature)
+
+#     T = Quantity(temperature, u.K)
+
+#     return 
   
 
 def problem_2c():
@@ -111,8 +119,25 @@ def problem_2c():
         plt.plot(n_e_array, P_e_array, label=r"T = 10$^%s$" % 
                  str(int(np.log10(T.value)))+" K")
 
-    plt.xlabel(r"$n_e$ (cm$^{-2}$)")
+    # d) overplot the relation for a non degenerate gas
+
+    nondeg_n_e_array = (np.logspace(14,32, 20) / u.cm**3).to('1/cm3')
+    nondeg_P_e_array = (nondeg_n_e_array * c.k_B * 3e7 * u.K).to('dyn/cm2')
+
+    plt.plot(nondeg_n_e_array, nondeg_P_e_array, '--', label='non-degenerate')
+
+    # and for a completely degenerate gas
+
+    deg_n_e_array = (np.logspace(20, 32, 20) / u.cm**3).to('1/cm3')
+    deg_P_e_array = ((3/np.pi)**(2/3) * deg_n_e_array**(5/3) * 
+                     c.h**2 / (20*c.m_e)).to('dyn/cm2')
+
+    plt.plot(deg_n_e_array, deg_P_e_array, ':', label='fully degenerate')
+
+    plt.xlabel(r"$n_e$ (cm$^{-3}$)")
     plt.ylabel(r"$P_e$ (dyn cm$^{-2}$)")
+
+    plt.title("Tom Rice. Problem 2c, d")
 
     plt.loglog()
 
