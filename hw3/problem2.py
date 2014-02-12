@@ -69,14 +69,20 @@ def electron_number_density(alpha, temperature):
 
     n_e = 4 * np.pi / c.h**3 * (2 * c.m_e * c.k_B * T)**(3/2) * F_12_alpha
 
-    return n_e.decompose().to('1/cm3')
+    return n_e.to('1/cm3')
 
 def electron_pressure(alpha, temperature):
 
     T = Quantity(temperature, u.K)
 
-    return
-    
+    n_e = electron_number_density(alpha, temperature)
+
+    twothirds_F_32_alpha = fermidirac_table['2/3 F_3/2'][alpha == 
+                                                  fermidirac_table['alpha']]
+    F_12_alpha = fermidirac_table['F_1/2'][alpha == fermidirac_table['alpha']]    
+    P_e = n_e * c.k_B * T * (twothirds_F_32_alpha / F_12_alpha)
+
+    return P_e.to('dyn / cm2')
     
 
 def problem_2c():
