@@ -83,7 +83,7 @@ def electron_pressure(alpha, temperature):
     P_e = n_e * c.k_B * T * (twothirds_F_32_alpha / F_12_alpha)
 
     return P_e.to('dyn / cm2')
-    
+  
 
 def problem_2c():
     """
@@ -100,20 +100,15 @@ def problem_2c():
     fig = plt.figure()
 
     alpha_array = fermidirac_table['alpha']
-
-    print alpha_array
-
-    # plot P vs n_e.
-
-    n_e_array = np.logspace(-5, 5, 20)
-
-    fermidirac_ratio = fermidirac_table['2/3 F_3/2']/fermidirac_table['F_1/2']
-
     T_array = np.array([1e7, 1e8, 1e9]) * u.K
 
     for T in T_array:
-    
-        P_e = n_e_array * c.k_B * T * fermidirac_ratio[0]
 
-        plt.plot(n_e_array, P_e)
+        n_e_array = electron_number_density(alpha_array, T)
+        
+        P_e_array = electron_pressure(alpha_array, T)
+
+        plt.plot(n_e_array, P_e_array)
+
+        
     
