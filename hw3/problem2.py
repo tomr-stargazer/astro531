@@ -132,7 +132,7 @@ def problem_2c():
     deg_P_e_array = ((3/np.pi)**(2/3) * deg_n_e_array**(5/3) * 
                      c.h**2 / (20*c.m_e)).to('dyn/cm2')
 
-    plt.plot(deg_n_e_array, deg_P_e_array, ':', label='fully degenerate')
+    plt.plot(deg_n_e_array, deg_P_e_array, 'r:', label='fully degenerate')
 
     plt.xlabel(r"$n_e$ (cm$^{-3}$)")
     plt.ylabel(r"$P_e$ (dyn cm$^{-2}$)")
