@@ -24,13 +24,36 @@ Comment on the goodness of the polytropic approximation for the sun.
 
 from __future__ import division
 
+import numpy as np
+
+import scipy.optimize
+
 import astropy
+import astropy.units as u
+import astropy.constants as c
 
 # read in table
 polytrope_n3 = astropy.table.Table.read("Polytrope_n3.txt", format='ascii',
                                         data_start=2)
 polytrope_n3.rename_column('col1', 'Xi')
 polytrope_n3.rename_column('col2', 'Theta')
+
+def beta_solver(mass, mean_molecular_weight):
+
+    mu = mean_molecular_weight
+
+    # minimize this: 18 (1-beta)^1/2 / (mu^2 beta^2) - M = 0
+
+    def beta_function(beta):
+        return np.abs(18*( (1 - beta)**(1/2) / (mu**2 * beta**2) ) - mass)
+
+    opt = scipy.optimize.minimize_scalar(beta_function, method='Bounded',
+                                         bounds=[0,1], tol=1e-8)
+
+    if opt.success:
+        return opt.x
+    else:
+        raise Exception(opt.message)
 
 def polytrope_pressure_density(radius_parameter):
     """
