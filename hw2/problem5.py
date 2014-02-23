@@ -10,7 +10,9 @@ import numpy as np
 
 import astropy.table
 
-cowley_table = astropy.table.Table.read("Table3.2.Cowley.txt", format='ascii')
+path = "/Users/tsrice/Documents/Code/astro531/hw2/"
+
+cowley_table = astropy.table.Table.read(path+"Table3.2.Cowley.txt", format='ascii')
 
 cowley_table.rename_column('col1', 'element')
 cowley_table.rename_column('col2', 'symbol')
@@ -25,7 +27,7 @@ def un_dexed_abundance(dex_abundance):
 total_mass = np.sum(
     un_dexed_abundance(cowley_table['log_abundance'])*cowley_table['atomic_weight'])
 
-print total_mass
+#print total_mass
 
 # X: mass fraction of H.   
 # Y: mass fraction of He.
@@ -41,9 +43,9 @@ def problem_5a():
 
     Z = 1 - X - Y
 
-    print "X: " + str(X)
-    print "Y: " + str(Y)
-    print "Z: " + str(Z)
+    #    print "X: " + str(X)
+    #    print "Y: " + str(Y)
+    #    print "Z: " + str(Z)
 
     return {'X':X, 'Y':Y, 'Z':Z}
 
