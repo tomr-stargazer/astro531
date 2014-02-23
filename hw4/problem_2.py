@@ -113,7 +113,6 @@ def polytrope_pressure_density_radius(mean_molecular_weight=mu_from_abundances()
 
     # from Cox, "Principles of Stellar Structure", Table 23.1    
     xi_at_stellar_surface = 6.89685
-    
     radius_array = c.R_sun * polytrope_n3['Xi'] / xi_at_stellar_surface
     
     density_array = central_solar_density * polytrope_n3['Theta']**3
@@ -124,6 +123,8 @@ def polytrope_pressure_density_radius(mean_molecular_weight=mu_from_abundances()
     k = ((c.k_B / (mu * c.u))**4 * 3/a_rad * (1 - beta)/beta**4 )**(1/3)
 
     pressure_array = k * density_array**(4/3)
+
+    print pressure_array[0]
     pressure_array_revised = (pressure_array.decompose().value * 
                               u.kg/(u.m * u.s**2))
 
@@ -132,14 +133,48 @@ def polytrope_pressure_density_radius(mean_molecular_weight=mu_from_abundances()
     # from Cox, "Principles of Stellar Structure", Table 23.1
     #    central_pressure = 1.242e17 * u.dyn / (u.cm)**2
 
-def solar_model_pressure_density():
+def solar_model_pressure_density_radius():
     """
     Extracts the solar pressure & density from the attached table.
 
     """
-    pass
+
+    pressure_array = solar_model['P'] * u.dyn / u.cm**2
+    density_array = solar_model['Rho'] * u.g / u.cm**3
+    radius_array = solar_model['R/Rsun'] * c.R_sun
+
+    return pressure_array, density_array, radius_array.to('cm')
     
     
 def plot_polytrope_and_solar_model():
+
+    poly_P, poly_rho, poly_r = polytrope_pressure_density_radius()
+    solar_P, solar_rho, solar_r = solar_model_pressure_density_radius()
+
+    # Plot P(r) 
+    fig1 = plt.figure()
+
+    plt.plot(poly_r, poly_P, label='n=3 polytrope')
+    plt.plot(solar_r, solar_P, label='bs05 standard solar model')
+
+    plt.legend()
+
+    plt.xlabel("Radius (cm)")
+    plt.ylabel(r"Pressure (dyn/cm$^2$)")
+
+    plt.title("Pressure vs radius in polytrope and standard solar model.")
+               
+    # Plot rho(r)
+    fig2 = plt.figure()
+
+    plt.plot(poly_r, poly_rho, label='n=3 polytrope')
+    plt.plot(solar_r, solar_rho, label='bs05 standard solar model')
+
+    plt.legend()
+
+    plt.xlabel("Radius (cm)")
+    plt.ylabel(r"density (g/cm$^3$)")
+
+    plt.title("Density vs radius in polytrope and standard solar model.")    
     
-    pass
+    return fig1, fig2
