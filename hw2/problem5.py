@@ -8,7 +8,7 @@ from __future__ import division
 
 import numpy as np
 
-import astropy
+import astropy.table
 
 cowley_table = astropy.table.Table.read("Table3.2.Cowley.txt", format='ascii')
 
