@@ -55,7 +55,7 @@ def beta_solver(mass, mean_molecular_weight):
     else:
         raise Exception(opt.message)
 
-def polytrope_pressure_density(radius_parameter):
+def polytrope_pressure_density(radius_parameter, mean_molecular_weight):
     """
     Returns the pressure and density at a given radius parameter "xi".
 
@@ -65,4 +65,44 @@ def polytrope_pressure_density(radius_parameter):
     """
 
     xi = radius_parameter
+    mu = mean_molecular_weight
+
+    try:
+        theta = polytrope_n3['Theta'][polytrope_n3['Xi'] == xi][0]
+    except IndexError:
+        raise ValueError("Invalid input value of xi")
+
+    average_solar_density = c.M_sun / (4/3 * np.pi * c.R_sun**3)
+
+    central_solar_density = 54.1825 * average_solar_density
+
+    # the second argument here SHOULD be the mean molecular weight of the Sun!
+    beta = beta_solver(1,1)
+
+    density_at_xi = central_solar_density * theta**3
+    rho = density_at_xi
+
+    scale_factor = c.R_sun / xi
+    a = scale_factor
+
+    #    k = (c.k_B / (mu * c.u) * 3/a * (1 - beta)/beta**4 )**(1/3)
+    #    k = 3.838e14 * (c.M_sun**(2/3) * c.R_sun**0)
+
+    # from Cox, "Principles of Stellar Structure", Table 23.1
+    central_pressure = 1.242e17 * u.dyn / (u.cm)**2
+    
+    pressure_at_xi = central_pressure * theta**4
+    
+    return pressure_at_xi.to('dyn cm-2'), density_at_xi.to('g cm-3')
+
+pressure = []
+density = []
+
+for xi in polytrope_n3['Xi']:
+
+    P, rho = polytrope_pressure_density(xi, 0.7)
+    pressure.append(P)
+    density.append(rho)
+
+
     
