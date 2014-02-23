@@ -32,6 +32,8 @@ import astropy
 import astropy.units as u
 import astropy.constants as c
 
+from astro531.hw2.problem5 import problem_5a as hw2_problem_5a
+
 # read in table
 polytrope_n3 = astropy.table.Table.read("Polytrope_n3.txt", format='ascii',
                                         data_start=2)
@@ -55,62 +57,57 @@ def beta_solver(mass, mean_molecular_weight):
     else:
         raise Exception(opt.message)
 
-def polytrope_pressure_density(radius_parameter, mean_molecular_weight):
+def mu_from_abundances():
     """
-    Returns the pressure and density at a given radius parameter "xi".
+    Mean molecular mass (including contribution from free electrons).
 
-    Makes use of the polytrope_n3 table; throws errors when you try 
-    to look up invalid values.
+    Computed as 
+    1/mu = X n_H/a_H + Y n_He/a_He + Z n_Z/a_Z
+
+    where n_H/a_H is the number of particles per each unit mass of 
+    hydrogen, and so on. Each hydrogen gives two particles, each
+    helium (mass=4) gives three particles, and each metal (mass=N) 
+    gives about N/2 particles.
+    
+    """
+
+    XYZ = hw2_problem_5a()
+    X = XYZ['X']
+    Y = XYZ['Y']
+    Z = 1 - X - Y
+
+    one_over_mu = 2*X + 3/4*Y + 1/2*Z
+
+    mu = 1/one_over_mu
+    return mu
+
+def polytrope_pressure_density(mean_molecular_weight=mu_from_abundances()):
+    """
+    Returns the pressure and density at all values of radius parameter "xi".
+
+    Makes use of the polytrope_n3 table.
 
     """
 
-    xi = radius_parameter
     mu = mean_molecular_weight
 
-    try:
-        theta = polytrope_n3['Theta'][polytrope_n3['Xi'] == xi][0]
-    except IndexError:
-        raise ValueError("Invalid input value of xi")
-
     average_solar_density = c.M_sun / (4/3 * np.pi * c.R_sun**3)
-
     central_solar_density = 54.1825 * average_solar_density
 
-    # the second argument here SHOULD be the mean molecular weight of the Sun!
     beta = beta_solver(1,1)
 
-    density_at_xi = central_solar_density * theta**3
-    rho = density_at_xi
+    density_array = central_solar_density * polytrope_n3['Theta']**3
 
     radiative_constant = 4 * c.sigma_sb / c.c
     a = radiative_constant
 
-    k = ((c.k_B / (mu * c.u))**4 * 3/a * (1 - beta)/beta**4 )**(1/3)
-    #    k = 3.838e14 * (c.M_sun**(2/3) * c.R_sun**0)
+    k = ((c.k_B / (mu * c.u))**4 * 3/a * (1 - beta)/beta**4 )**(1/3)    
 
+    pressure_array = k * density_array**(4/3)
+    pressure_array_revised = (pressure_array.decompose().value * 
+                              u.kg/(u.m * u.s**2))
+
+    return pressure_array_revised.to('dyn cm-2'), density_array.to('g cm-3')    
+    
     # from Cox, "Principles of Stellar Structure", Table 23.1
     #    central_pressure = 1.242e17 * u.dyn / (u.cm)**2
-
-    pressure_at_xi = k * density_at_xi**(4/3)
-
-    # unit hack because something isn't working right
-    pressure_at_xi = pressure_at_xi.decompose().value * u.kg/(u.m * u.s**2)
-    
-    #    pressure_at_xi = central_pressure * theta**4
-    
-    return pressure_at_xi.to('dyn cm-2'), density_at_xi.to('g cm-3')
-#    return pressure_at_xi.to('kg s-2 m'), density_at_xi
-
-pressure = []
-density = []
-
-for xi in polytrope_n3['Xi']:
-
-    P, rho = polytrope_pressure_density(xi, 0.7)
-    pressure.append(P)
-    density.append(rho)
-
-    
-
-
-    
