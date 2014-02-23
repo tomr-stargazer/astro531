@@ -21,3 +21,25 @@ of P(r) and rho(r) from the "Standard Solar Model".
 Comment on the goodness of the polytropic approximation for the sun.
 
 """
+
+from __future__ import division
+
+import astropy
+
+# read in table
+polytrope_n3 = astropy.table.Table.read("Polytrope_n3.txt", format='ascii',
+                                        data_start=2)
+polytrope_n3.rename_column('col1', 'Xi')
+polytrope_n3.rename_column('col2', 'Theta')
+
+def polytrope_pressure_density(radius_parameter):
+    """
+    Returns the pressure and density at a given radius parameter "xi".
+
+    Makes use of the polytrope_n3 table; throws errors when you try 
+    to look up invalid values.
+
+    """
+
+    xi = radius_parameter
+    
