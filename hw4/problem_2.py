@@ -82,18 +82,24 @@ def polytrope_pressure_density(radius_parameter, mean_molecular_weight):
     density_at_xi = central_solar_density * theta**3
     rho = density_at_xi
 
-    scale_factor = c.R_sun / xi
-    a = scale_factor
+    radiative_constant = 4 * c.sigma_sb / c.c
+    a = radiative_constant
 
-    #    k = (c.k_B / (mu * c.u) * 3/a * (1 - beta)/beta**4 )**(1/3)
+    k = ((c.k_B / (mu * c.u))**4 * 3/a * (1 - beta)/beta**4 )**(1/3)
     #    k = 3.838e14 * (c.M_sun**(2/3) * c.R_sun**0)
 
     # from Cox, "Principles of Stellar Structure", Table 23.1
-    central_pressure = 1.242e17 * u.dyn / (u.cm)**2
+    #    central_pressure = 1.242e17 * u.dyn / (u.cm)**2
+
+    pressure_at_xi = k * density_at_xi**(4/3)
+
+    # unit hack because something isn't working right
+    pressure_at_xi = pressure_at_xi.decompose().value * u.kg/(u.m * u.s**2)
     
-    pressure_at_xi = central_pressure * theta**4
+    #    pressure_at_xi = central_pressure * theta**4
     
     return pressure_at_xi.to('dyn cm-2'), density_at_xi.to('g cm-3')
+#    return pressure_at_xi.to('kg s-2 m'), density_at_xi
 
 pressure = []
 density = []
@@ -103,6 +109,8 @@ for xi in polytrope_n3['Xi']:
     P, rho = polytrope_pressure_density(xi, 0.7)
     pressure.append(P)
     density.append(rho)
+
+    
 
 
     
