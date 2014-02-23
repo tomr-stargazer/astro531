@@ -162,6 +162,8 @@ def plot_polytrope_and_solar_model():
     plt.xlabel("Radius (cm)")
     plt.ylabel(r"Pressure (dyn/cm$^2$)")
 
+    plt.semilogy()
+
     plt.title("Pressure vs radius in polytrope and standard solar model.")
                
     # Plot rho(r)
@@ -174,6 +176,8 @@ def plot_polytrope_and_solar_model():
 
     plt.xlabel("Radius (cm)")
     plt.ylabel(r"density (g/cm$^3$)")
+
+    plt.semilogy()
 
     plt.title("Density vs radius in polytrope and standard solar model.")    
     
