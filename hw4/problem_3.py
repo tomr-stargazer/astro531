@@ -6,6 +6,8 @@ from __future__ import division
 
 import numpy as np
 
+from scipy.integrate import trapz
+
 import astropy
 import astropy.units as u
 import astropy.constants as c
@@ -26,6 +28,19 @@ chi_R_r = (4e4 * u.cm**2/u.g * (1 - X_r - Y_r) * (1 + X_r) *
 
 print chi_R_r[0]
 
-def chi_R_eta_bar(r):
-    pass
-    
+# equation 5
+eta_r = solar_model['L/Lsun'] / solar_model['M/Msun']
+
+P_r = solar_model['P']
+
+chi_R_eta_bar_r = np.zeros_like(chi_R_r)
+
+for i in range(len(r)):
+
+    # integrate from the current radius OUTWARDS
+    chi_eta_integrand = (chi_R_r * eta_r)[i:]
+
+    chi_R_eta_bar_r[i] = 1 / P_r[i] * -trapz(chi_eta_integrand, P_r[i:])
+
+print chi_R_eta_bar_r[0]
+print chi_R_eta_bar_r[-1]
