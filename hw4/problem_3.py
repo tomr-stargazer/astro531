@@ -44,3 +44,11 @@ for i in range(len(r)):
 
 print chi_R_eta_bar_r[0]
 print chi_R_eta_bar_r[-1]
+
+# make a beta
+
+thing = c.L_sun / (4 * np.pi * c.c * c.G * c.M_sun) * chi_R_eta_bar_r
+
+print thing.decompose().unit
+
+beta_r = 1 - c.L_sun / (4 * np.pi * c.c * c.G * c.M_sun) * chi_R_eta_bar_r
