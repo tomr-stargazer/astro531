@@ -5,6 +5,7 @@
 from __future__ import division
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 from scipy.integrate import trapz
 
@@ -52,3 +53,37 @@ thing = c.L_sun / (4 * np.pi * c.c * c.G * c.M_sun) * chi_R_eta_bar_r
 print thing.decompose().unit
 
 beta_r = 1 - c.L_sun / (4 * np.pi * c.c * c.G * c.M_sun) * chi_R_eta_bar_r
+
+# problem4
+
+
+anisotropic_term = (3 / (4 * np.pi) * solar_model['L/Lsun']*c.L_sun /
+                    (4*np.pi * (solar_model['R/Rsun'] * c.R_sun)**2) )
+
+anisotropic_term_surface = (3 / (4 * np.pi) * c.L_sun /
+                    (4*np.pi * (solar_model['R/Rsun'] * c.R_sun)**2) )
+
+isotropic_term = (c.c / (4 * np.pi) * (1 - beta_r) * solar_model['P']*u.dyn/u.cm**2)
+
+def problem4():
+    """ 
+    Make some plots.
+
+    """
+
+    fig = plt.figure()
+
+    plt.plot(r, (anisotropic_term/isotropic_term).decompose(), 
+             label='L = local luminosity')
+    plt.plot(r, (anisotropic_term_surface/isotropic_term).decompose(), 
+             label='L = surface luminosity')
+
+    plt.semilogy()
+    plt.title("Problem 4: Ratio of anisotropic to isotropic radiation in the sun")
+
+    plt.xlabel(r"r/R$_\odot$")
+    plt.ylabel("anisotropic / isotropic")
+
+    plt.legend(loc='lower right')
+             
+    return fig
