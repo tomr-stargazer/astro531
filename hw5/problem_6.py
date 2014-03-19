@@ -12,6 +12,7 @@ the problem.
 from __future__ import division
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 from scipy.integrate import trapz
 
@@ -45,5 +46,55 @@ for i in range(len(solar_model)):
 	calculated_mass_array[i] = M_i
 
 
+def problem_6a():
+	pass
 
+def problem_6b():
 
+	fig1 = plt.figure()
+	plt.plot((radius_array/c.R_sun).decompose().value, 
+		     (calculated_mass_array/c.M_sun).decompose().value)
+
+	plt.xlabel("Radius r/R_sun")
+	plt.ylabel("Mass M/M_sun")
+	plt.title("Problem 6b. Tom Rice")
+
+	fig2 = plt.figure()
+	plt.plot((radius_array/c.R_sun).decompose().value, 
+		     (calculated_luminosity_array/calculated_luminosity_array[-1]).decompose().value)
+
+	plt.xlabel("Radius r/R_sun")
+	plt.ylabel("Luminosity L/L_sun")
+	plt.title("Problem 6b. Tom Rice")	
+
+	plt.plot([0,1], [0.9,0.9], '--')
+
+	return fig1, fig2
+
+def problem_6c():
+
+	fig1 = plt.figure()
+
+	plt.plot(solar_model['R/Rsun'], solar_model['X'])
+	plt.plot(solar_model['R/Rsun'], solar_model['Y(He4)'])
+
+	plt.text(0.6, 0.77, "X: H mass fraction", color='b', fontsize=18)
+	plt.text(0.6, 0.3, "Y: He mass fraction", color='g', fontsize=18)
+
+	plt.xlabel("Radius r/R_sun")	
+	plt.title("Problem 6c. Tom Rice")
+
+	return fig1
+
+def problem_6de():
+
+	fig1 = plt.figure()
+
+	plt.plot(solar_model['R/Rsun'], epsilon_array.value)
+
+	mu_array = 1 / (3* solar_model['X'] + 0.5 * (solar_model['Y(He4)'] + solar_model['He3']) + 1)
+
+	fig2 = plt.figure()
+	plt.plot(solar_model['R/Rsun'], mu_array)
+
+	return fig1, fig2
