@@ -78,3 +78,29 @@ def problem_1d():
 
 	return R.decompose()
 
+def problem_1e():
+	""" The ratio of turbulent pressure to gas pressure."""
+
+	v, v_s, x = problem_1c()
+
+	return (v/v_s)**2
+
+def problem_1f():
+	""" The mean lifetime of the convective element t ~ l/v."""
+
+	v = problem_1c()[0]
+
+	convection_cell_lifetime = l / v
+
+	print "Convection timescale: {0}".format(convection_cell_lifetime)
+
+	kelvin_timescale = c.G * c.M_sun**2 / (c.R_sun * c.L_sun)
+
+	print "Kelvin timescale: {0}".format(kelvin_timescale.decompose().to('yr'))
+
+	nuclear_timescale = 0.007 * 0.3 * c.M_sun * c.c**2 / (c.L_sun)
+
+	print "Nuclear timescale: {0}".format(nuclear_timescale.decompose().to('yr'))
+
+	return convection_cell_lifetime.decompose()
+
