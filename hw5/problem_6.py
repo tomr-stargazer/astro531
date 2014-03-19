@@ -29,9 +29,9 @@ pressure_array = solar_model['P'] * u.dyn / u.cm**2
 density_array = solar_model['Rho'] * u.g / u.cm**3
 radius_array = (solar_model['R/Rsun'] * c.R_sun).to('cm')
 
-epsilon_array = u.Quantity(3.038e-33, u.erg / u.g / u.s) * solar_model['X']**2 * density_array * solar_model['T']**(4.5)
+epsilon_array = u.Quantity(3.038e-33, u.erg / u.g / u.s) * solar_model['X']**2 * solar_model['Rho'] * solar_model['T']**(4.5)
 
-luminosity_integrand = (epsilon_array * 4*np.pi* radius_array**2).to('erg cm-1 s-1')
+luminosity_integrand = (epsilon_array * density_array * 4*np.pi* radius_array**2).to('erg cm-1 s-1')
 mass_integrand = (density_array * 4*np.pi* radius_array**2).to('g cm-1')
 
 calculated_luminosity_array = (np.zeros_like(solar_model['L/Lsun']) * luminosity_integrand.unit * u.cm).to('erg / s')
@@ -61,7 +61,7 @@ def problem_6b():
 
 	fig2 = plt.figure()
 	plt.plot((radius_array/c.R_sun).decompose().value, 
-		     (calculated_luminosity_array/calculated_luminosity_array[-1]).decompose().value)
+		     (calculated_luminosity_array/c.L_sun).decompose().value)
 
 	plt.xlabel("Radius r/R_sun")
 	plt.ylabel("Luminosity L/L_sun")
@@ -96,7 +96,7 @@ def problem_6de():
 	plt.ylabel("Epsilon")
 	plt.title("Problem 6d. Tom Rice")	
 
-	mu_array = 1 / (3* solar_model['X'] + 0.5 * (solar_model['Y(He4)'] + solar_model['He3']) + 1)
+	mu_array = 2 / (3* solar_model['X'] + 0.5 * (solar_model['Y(He4)'] + solar_model['He3']) + 1)
 
 	fig2 = plt.figure()
 	plt.plot(solar_model['R/Rsun'], mu_array)
