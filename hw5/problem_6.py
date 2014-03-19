@@ -92,9 +92,17 @@ def problem_6de():
 
 	plt.plot(solar_model['R/Rsun'], epsilon_array.value)
 
+	plt.xlabel("Radius r/R_sun")	
+	plt.ylabel("Epsilon")
+	plt.title("Problem 6d. Tom Rice")	
+
 	mu_array = 1 / (3* solar_model['X'] + 0.5 * (solar_model['Y(He4)'] + solar_model['He3']) + 1)
 
 	fig2 = plt.figure()
 	plt.plot(solar_model['R/Rsun'], mu_array)
+
+	plt.xlabel("Radius r/R_sun")	
+	plt.ylabel("Mean molecular weight")
+	plt.title("Problem 6e. Tom Rice")	
 
 	return fig1, fig2
