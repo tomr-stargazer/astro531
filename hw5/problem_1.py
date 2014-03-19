@@ -13,7 +13,7 @@ import astropy.units as u
 # Various constants that are used later in the math.
 X = 0.707 # hydrogen mass abundance
 Y = 0.274 # helium
-mu = 2 / (3*X + Y/2 + 1) # mean molecular weight
+mu = 2 / (3*X + Y/2 + 1) # mean molecular weight assuming full ionization
 
 rho = 1.4 * u.g / u.cm**3 # mass density
 c_P = 5/2 * c.k_B / (mu*c.u) # heat capacity
@@ -25,6 +25,11 @@ l = r / 10 # mixing length at r
 
 gamma = 5/3 # adiabatic index
 P = rho/(mu * c.u) * c.k_B * T # pressure
+
+ln_Lambda = 10 # cutoff factor in nu (Spitzer 1962)
+# Coefficient of kinematical viscosity
+nu = (2.21e-15 * u.g / u.cm / u.s) * (T/u.K)**(5/2) / (rho * ln_Lambda)
+
 
 def problem_1a():
 	""" 
@@ -48,7 +53,8 @@ def	problem_1b():
 	return excess.decompose()
 
 def problem_1c():
-	""" Calculate the velocity of the convective elements v. """
+	""" Calculate the velocity of the convective elements v. 
+	Compare to sound speed. """
 
 	delta_nabla_T = problem_1a()
 
@@ -60,5 +66,15 @@ def problem_1c():
 
 	print "sound speed is {0}".format(velocity_sound.decompose())
 
-	return (velocity_convective/velocity_sound).decompose()
+	return (velocity_convective.decompose(), velocity_sound.decompose(), 
+		(velocity_convective/velocity_sound).decompose())
+
+def problem_1d():
+	""" Reynolds number vl / nu """
+
+	v = problem_1c()[0] 
+
+	R = v * l / nu
+
+	return R.decompose()
 
