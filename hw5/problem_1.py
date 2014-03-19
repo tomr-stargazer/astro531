@@ -27,5 +27,5 @@ def problem_1a():
 	delta_nabla_T = (c.L_sun *  (T/(M*c.G))**(1/2) /
 		(4*np.pi * (r**3)/100 * rho * c_P) )**(2/3)
 
-	return delta_nabla_T.decompose() 
+	return u.Quantity(delta_nabla_T.decompose().value, u.K / u.m).to('K/cm')
 
